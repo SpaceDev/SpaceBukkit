@@ -22,14 +22,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Logger;
 
 import me.neatmonster.spacebukkit.SpaceBukkit;
 
 import org.bukkit.ChatColor;
 
 public class Utilities {
-    public static Logger logger = Logger.getLogger("Minecraft");
 
     public static String addHeader(final String string) throws UnsupportedEncodingException {
         String finishedString = "";
@@ -141,15 +139,15 @@ public class Utilities {
             bufferedReader.close();
             return stringBuffer.toString();
         } catch (final ConnectException e) {
-            logger.severe("----------------------------------------------------------");
-            logger.severe("| SpaceRTK cannot be reached, please make sure you have  |");
-            logger.severe("| RemoteToolkit installed, SpaceRTK placed in /toolkit   |");
-            logger.severe("| /modules. Otherwise report this issue on our issues    |");
-            logger.severe("| tracker (http://bit.ly/spacebukkitissues).             |");
-            logger.severe("----------------------------------------------------------");
+            SpaceBukkit.LOGGER.severe("----------------------------------------------------------");
+            SpaceBukkit.LOGGER.severe("| SpaceRTK cannot be reached, please make sure you have  |");
+            SpaceBukkit.LOGGER.severe("| RemoteToolkit installed, SpaceRTK placed in /toolkit   |");
+            SpaceBukkit.LOGGER.severe("| /modules. Otherwise report this issue on our issues    |");
+            SpaceBukkit.LOGGER.severe("| tracker (http://bit.ly/spacebukkitissues).             |");
+            SpaceBukkit.LOGGER.severe("----------------------------------------------------------");
             e.printStackTrace();
             try {
-                logger.severe("http://localhost:" + SpaceBukkit.getInstance().rPort + "/call?method=" + method
+                SpaceBukkit.LOGGER.severe("http://localhost:" + SpaceBukkit.getInstance().rPort + "/call?method=" + method
                         + "&args=" + arguments + "&key=" + Utilities.crypt(SpaceBukkit.getInstance().salt));
             } catch (final NoSuchAlgorithmException e_) {
                 e_.printStackTrace();
