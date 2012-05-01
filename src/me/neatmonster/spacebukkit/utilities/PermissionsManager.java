@@ -14,6 +14,9 @@
  */
 package me.neatmonster.spacebukkit.utilities;
 
+import org.bukkit.Bukkit;
+
+import me.neatmonster.spacebukkit.utilities.permissions.BPermissionsConnector;
 import me.neatmonster.spacebukkit.utilities.permissions.PermissionsConnector;
 import me.neatmonster.spacebukkit.utilities.permissions.PermissionsExConnector;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
@@ -52,10 +55,12 @@ public class PermissionsManager {
         /*
          * Permissions plugins are looked for in the following order:
          * -PermissionsEX
+         * -bPermissions
          *
          * More to follow soon.
          */
         if(PermissionsEx.isAvailable()) return new PermissionsExConnector(PermissionsEx.getPermissionManager());
+        if(Bukkit.getPluginManager().getPlugin("bPermissions") != null) return new BPermissionsConnector();
 
         return null;
     }
