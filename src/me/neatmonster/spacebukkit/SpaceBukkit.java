@@ -38,6 +38,9 @@ import com.drdanick.rtoolkit.EventDispatcher;
 import com.drdanick.rtoolkit.event.ToolkitEventHandler;
 
 public class SpaceBukkit extends JavaPlugin {
+    public static final String PREFIX = "[SpaceBukkit] ";
+    public static final Logger LOGGER = Logger.getLogger("Minecraft");
+    
     public static SpaceRTK     spaceRTK = null;
     private static SpaceBukkit spacebukkit;
 
@@ -55,8 +58,6 @@ public class SpaceBukkit extends JavaPlugin {
     public PerformanceMonitor   performanceMonitor;
 
     private YamlConfiguration       configuration;
-    public Logger               logger = Logger.getLogger("Minecraft");
-    public String               logTag = "[SpaceBukkit] ";
 
     private final Timer         timer  = new Timer();
     private PermissionsManager  pManager;
@@ -73,16 +74,16 @@ public class SpaceBukkit extends JavaPlugin {
             if (panelListener != null)
                 panelListener.stopServer();
         } catch (final Exception e) {
-            logger.severe(logTag + e.getMessage());
+            LOGGER.severe(PREFIX + e.getMessage());
         }
         edt.setRunning(false);
         synchronized (edt) {
             edt.notifyAll();
         }
         eventHandler.setEnabled(false);
-        logger.info("----------------------------------------------------------");
-        logger.info("|             SpaceBukkit is now disabled!               |");
-        logger.info("----------------------------------------------------------");
+        LOGGER.info("----------------------------------------------------------");
+        LOGGER.info("|             SpaceBukkit is now disabled!               |");
+        LOGGER.info("----------------------------------------------------------");
     }
 
     @Override
@@ -134,11 +135,11 @@ public class SpaceBukkit extends JavaPlugin {
         panelListener = new PanelListener();
         performanceMonitor = new PerformanceMonitor();
         timer.scheduleAtFixedRate(performanceMonitor, 0L, 1000L);
-        logger.info("----------------------------------------------------------");
-        logger.info("|        SpaceBukkit version "
+        LOGGER.info("----------------------------------------------------------");
+        LOGGER.info("|        SpaceBukkit version "
                 + Bukkit.getPluginManager().getPlugin("SpaceBukkit").getDescription().getVersion()
                 + " is now enabled!         |");
-        logger.info("----------------------------------------------------------");
+        LOGGER.info("----------------------------------------------------------");
     }
 
     public EventDispatcher getEdt() {

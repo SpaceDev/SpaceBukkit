@@ -39,7 +39,7 @@ public class PluginsRequester implements Runnable {
                 stringBuffer.append(line);
             bufferedReader.close();
             PluginsManager.pluginsNames = (JSONArray) JSONValue.parse(stringBuffer.toString());
-            SpaceBukkit.getInstance().logger.info(SpaceBukkit.getInstance().logTag + "Database contains "
+            SpaceBukkit.LOGGER.info(SpaceBukkit.PREFIX + "Database contains "
                     + PluginsManager.pluginsNames.size() + " plugins.");
         } catch (final Exception e) {
             e.printStackTrace();
