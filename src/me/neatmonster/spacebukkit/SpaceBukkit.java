@@ -14,7 +14,6 @@
  */
 package me.neatmonster.spacebukkit;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.UUID;
@@ -27,6 +26,7 @@ import me.neatmonster.spacebukkit.players.SBListener;
 import me.neatmonster.spacebukkit.plugins.PluginsManager;
 import me.neatmonster.spacebukkit.system.PerformanceMonitor;
 import me.neatmonster.spacebukkit.utilities.PermissionsManager;
+import me.neatmonster.spacemodule.SpaceModule;
 import me.neatmonster.spacemodule.api.ActionsManager;
 import me.neatmonster.spacertk.SpaceRTK;
 
@@ -88,7 +88,7 @@ public class SpaceBukkit extends JavaPlugin {
     @Override
     public void onEnable() {
         spacebukkit = this;
-        configuration = YamlConfiguration.loadConfiguration(new File("SpaceModule", "configuration.yml"));
+        configuration = YamlConfiguration.loadConfiguration(SpaceModule.CONFIGURATION);
         salt = configuration.getString("General.Salt", "<default>");
         if (salt.equals("<default>")) {
             salt = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
@@ -98,7 +98,7 @@ public class SpaceBukkit extends JavaPlugin {
         port = configuration.getInt("SpaceBukkit.Port", 2011);
         rPort = configuration.getInt("SpaceRTK.Port", 2012);
         try {
-            configuration.save(new File("SpaceModule", "configuration.yml"));
+            configuration.save(SpaceModule.CONFIGURATION);
         } catch (IOException e) {
             e.printStackTrace();
         }
