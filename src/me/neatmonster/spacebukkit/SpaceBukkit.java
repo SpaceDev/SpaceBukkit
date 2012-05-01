@@ -15,12 +15,11 @@
 package me.neatmonster.spacebukkit;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import com.drdanick.rtoolkit.EventDispatcher;
-import com.drdanick.rtoolkit.event.ToolkitEventHandler;
 import me.neatmonster.spacebukkit.actions.PlayerActions;
 import me.neatmonster.spacebukkit.actions.ServerActions;
 import me.neatmonster.spacebukkit.actions.SystemActions;
@@ -32,10 +31,12 @@ import me.neatmonster.spacemodule.api.ActionsManager;
 import me.neatmonster.spacertk.SpaceRTK;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.config.Configuration;
 
-@SuppressWarnings("deprecation")
+import com.drdanick.rtoolkit.EventDispatcher;
+import com.drdanick.rtoolkit.event.ToolkitEventHandler;
+
 public class SpaceBukkit extends JavaPlugin {
     public static SpaceRTK     spaceRTK = null;
     private static SpaceBukkit spacebukkit;
@@ -53,7 +54,7 @@ public class SpaceBukkit extends JavaPlugin {
     public PanelListener        panelListener;
     public PerformanceMonitor   performanceMonitor;
 
-    private Configuration       configuration;
+    private YamlConfiguration       configuration;
     public Logger               logger = Logger.getLogger("Minecraft");
     public String               logTag = "[SpaceBukkit] ";
 
@@ -87,17 +88,20 @@ public class SpaceBukkit extends JavaPlugin {
     @Override
     public void onEnable() {
         spacebukkit = this;
-        configuration = new Configuration(new File("SpaceModule", "configuration.yml"));
-        configuration.load();
+        configuration = YamlConfiguration.loadConfiguration(new File("SpaceModule", "configuration.yml"));
         salt = configuration.getString("General.Salt", "<default>");
         if (salt.equals("<default>")) {
             salt = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
-            configuration.setProperty("General.Salt", salt);
+            configuration.set("General.Salt", salt);
         }
-        configuration.setProperty("General.WorldContainer", Bukkit.getWorldContainer().getPath());
+        configuration.set("General.WorldContainer", Bukkit.getWorldContainer().getPath());
         port = configuration.getInt("SpaceBukkit.Port", 2011);
         rPort = configuration.getInt("SpaceRTK.Port", 2012);
-        configuration.save();
+        try {
+            configuration.save(new File("SpaceModule", "configuration.yml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         if(edt == null)
             edt = new EventDispatcher();
