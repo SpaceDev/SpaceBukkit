@@ -137,7 +137,7 @@ public class SpaceBukkit extends JavaPlugin {
         timer.scheduleAtFixedRate(performanceMonitor, 0L, 1000L);
         LOGGER.info("----------------------------------------------------------");
         LOGGER.info("|        SpaceBukkit version "
-                + Bukkit.getPluginManager().getPlugin("SpaceBukkit").getDescription().getVersion()
+                + this.getDescription().getVersion()
                 + " is now enabled!         |");
         LOGGER.info("----------------------------------------------------------");
     }
