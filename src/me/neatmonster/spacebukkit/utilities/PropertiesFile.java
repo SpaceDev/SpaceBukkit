@@ -58,7 +58,7 @@ public final class PropertiesFile {
             try {
                 load();
             } catch (final IOException ex) {
-                SpaceBukkit.LOGGER.severe("[PropertiesFile] Unable to load " + fileName + "!");
+                SpaceBukkit.getInstance().getLogger().severe("[PropertiesFile] Unable to load " + fileName + "!");
             }
         else
             save();
@@ -574,14 +574,14 @@ public final class PropertiesFile {
         try {
             os = new FileOutputStream(new File(fileName));
         } catch (final FileNotFoundException ex) {
-            SpaceBukkit.LOGGER.severe("[PropertiesFile] Unable to open " + fileName + "!");
+            SpaceBukkit.getInstance().getLogger().severe("[PropertiesFile] Unable to open " + fileName + "!");
         }
 
         PrintStream ps = null;
         try {
             ps = new PrintStream(os, true, "UTF-8");
         } catch (final UnsupportedEncodingException ex) {
-            SpaceBukkit.LOGGER.severe("[PropertiesFile] Unable to write to " + fileName + "!");
+            SpaceBukkit.getInstance().getLogger().severe("[PropertiesFile] Unable to write to " + fileName + "!");
         }
 
         // Keep track of properties that were set
@@ -633,7 +633,7 @@ public final class PropertiesFile {
             lines.clear();
             load();
         } catch (final IOException ex) {
-            SpaceBukkit.LOGGER.severe("[PropertiesFile] Unable to load " + fileName + "!");
+            SpaceBukkit.getInstance().getLogger().severe("[PropertiesFile] Unable to load " + fileName + "!");
         }
     }
 

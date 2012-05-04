@@ -36,7 +36,7 @@ public class PerformanceMonitor extends TimerTask {
     public PerformanceMonitor() {
         monitor = new JavaSysMon();
         if (!monitor.supportedPlatform()) {
-            SpaceBukkit.LOGGER.severe(SpaceBukkit.PREFIX + "Performance monitoring unsupported!");
+            SpaceBukkit.getInstance().getLogger().severe("Performance monitoring unsupported!");
             monitor = null;
         } else
             now = monitor.cpuTimes();

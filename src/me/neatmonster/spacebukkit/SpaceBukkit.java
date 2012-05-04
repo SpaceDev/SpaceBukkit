@@ -17,7 +17,6 @@ package me.neatmonster.spacebukkit;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 import me.neatmonster.spacebukkit.actions.PlayerActions;
 import me.neatmonster.spacebukkit.actions.ServerActions;
@@ -32,14 +31,13 @@ import me.neatmonster.spacertk.SpaceRTK;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.drdanick.rtoolkit.EventDispatcher;
 import com.drdanick.rtoolkit.event.ToolkitEventHandler;
 
 public class SpaceBukkit extends JavaPlugin {
-    public static final String PREFIX = "[SpaceBukkit] ";
-    public static final Logger LOGGER = Logger.getLogger("Minecraft");
     
     public static SpaceRTK     spaceRTK = null;
     private static SpaceBukkit spacebukkit;
@@ -64,6 +62,8 @@ public class SpaceBukkit extends JavaPlugin {
 
     private EventDispatcher     edt;
     private ToolkitEventHandler eventHandler;
+    
+    private PluginLogger logger;
 
     @Override
     public void onDisable() {
@@ -74,21 +74,22 @@ public class SpaceBukkit extends JavaPlugin {
             if (panelListener != null)
                 panelListener.stopServer();
         } catch (final Exception e) {
-            LOGGER.severe(PREFIX + e.getMessage());
+            logger.severe(e.getMessage());
         }
         edt.setRunning(false);
         synchronized (edt) {
             edt.notifyAll();
         }
         eventHandler.setEnabled(false);
-        LOGGER.info("----------------------------------------------------------");
-        LOGGER.info("|             SpaceBukkit is now disabled!               |");
-        LOGGER.info("----------------------------------------------------------");
+        logger.info("----------------------------------------------------------");
+        logger.info("|             SpaceBukkit is now disabled!               |");
+        logger.info("----------------------------------------------------------");
     }
 
     @Override
     public void onEnable() {
         spacebukkit = this;
+        logger = this.getLogger();
         configuration = YamlConfiguration.loadConfiguration(SpaceModule.CONFIGURATION);
         salt = configuration.getString("General.Salt", "<default>");
         if (salt.equals("<default>")) {
@@ -135,11 +136,11 @@ public class SpaceBukkit extends JavaPlugin {
         panelListener = new PanelListener();
         performanceMonitor = new PerformanceMonitor();
         timer.scheduleAtFixedRate(performanceMonitor, 0L, 1000L);
-        LOGGER.info("----------------------------------------------------------");
-        LOGGER.info("|        SpaceBukkit version "
+        logger.info("----------------------------------------------------------");
+        logger.info("|        SpaceBukkit version "
                 + this.getDescription().getVersion()
                 + " is now enabled!         |");
-        LOGGER.info("----------------------------------------------------------");
+        logger.info("----------------------------------------------------------");
     }
 
     public EventDispatcher getEdt() {
@@ -148,6 +149,10 @@ public class SpaceBukkit extends JavaPlugin {
 
     public ToolkitEventHandler getEventHandler() {
         return eventHandler;
+    }
+    
+    public PluginLogger getLogger() {
+        return logger;
     }
 
     public PermissionsManager getPermissionsManager() {

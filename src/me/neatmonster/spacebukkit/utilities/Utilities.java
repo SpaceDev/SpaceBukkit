@@ -139,15 +139,15 @@ public class Utilities {
             bufferedReader.close();
             return stringBuffer.toString();
         } catch (final ConnectException e) {
-            SpaceBukkit.LOGGER.severe("----------------------------------------------------------");
-            SpaceBukkit.LOGGER.severe("| SpaceRTK cannot be reached, please make sure you have  |");
-            SpaceBukkit.LOGGER.severe("| RemoteToolkit installed, SpaceRTK placed in /toolkit   |");
-            SpaceBukkit.LOGGER.severe("| /modules. Otherwise report this issue on our issues    |");
-            SpaceBukkit.LOGGER.severe("| tracker (http://bit.ly/spacebukkitissues).             |");
-            SpaceBukkit.LOGGER.severe("----------------------------------------------------------");
+            SpaceBukkit.getInstance().getLogger().severe("----------------------------------------------------------");
+            SpaceBukkit.getInstance().getLogger().severe("| SpaceRTK cannot be reached, please make sure you have  |");
+            SpaceBukkit.getInstance().getLogger().severe("| RemoteToolkit installed, SpaceRTK placed in /toolkit   |");
+            SpaceBukkit.getInstance().getLogger().severe("| /modules. Otherwise report this issue on our issues    |");
+            SpaceBukkit.getInstance().getLogger().severe("| tracker (http://bit.ly/spacebukkitissues).             |");
+            SpaceBukkit.getInstance().getLogger().severe("----------------------------------------------------------");
             e.printStackTrace();
             try {
-                SpaceBukkit.LOGGER.severe("http://localhost:" + SpaceBukkit.getInstance().rPort + "/call?method=" + method
+                SpaceBukkit.getInstance().getLogger().severe("http://localhost:" + SpaceBukkit.getInstance().rPort + "/call?method=" + method
                         + "&args=" + arguments + "&key=" + Utilities.crypt(SpaceBukkit.getInstance().salt));
             } catch (final NoSuchAlgorithmException e_) {
                 e_.printStackTrace();
