@@ -139,19 +139,22 @@ public class PlayerActions {
     public LinkedHashMap<Integer, Map<String, Object>> getInventory(final String playerName) {
         final LinkedHashMap<Integer, Map<String, Object>> playerInventory = new LinkedHashMap<Integer, Map<String, Object>>();
         final Player player = Bukkit.getPlayer(playerName);
-        if (player == null)
-            return new LinkedHashMap<Integer, Map<String, Object>>();
-        for (int i = 0; i < player.getInventory().getSize(); i++)
-            playerInventory.put(i, player.getInventory().getItem(i) == null ? new HashMap<String, Object>() : player
-                    .getInventory().getItem(i).serialize());
-        playerInventory.put(100, player.getInventory().getBoots() == null ? new HashMap<String, Object>() : player
-                .getInventory().getBoots().serialize());
-        playerInventory.put(101, player.getInventory().getLeggings() == null ? new HashMap<String, Object>() : player
-                .getInventory().getLeggings().serialize());
-        playerInventory.put(102, player.getInventory().getChestplate() == null ? new HashMap<String, Object>() : player
-                .getInventory().getChestplate().serialize());
-        playerInventory.put(103, player.getInventory().getHelmet() == null ? new HashMap<String, Object>() : player
-                .getInventory().getHelmet().serialize());
+        if (player == null) {
+            return playerInventory;
+        }
+        PlayerInventory inv = player.getInventory();
+        for (int i = 0; i < inv.getSize(); i++) {
+            ItemStack stack = inv.getItem(i);
+            playerInventory.put(i, stack == null ? new HashMap<String, Object>() : stack.serialize());
+        }
+        ItemStack boots = inv.getBoots();
+        playerInventory.put(100, boots == null ? new HashMap<String, Object>() : boots.serialize());
+        ItemStack leggings = inv.getLeggings();
+        playerInventory.put(101, leggings == null ? new HashMap<String, Object>() : leggings.serialize());
+        ItemStack chestplate = inv.getChestplate();
+        playerInventory.put(102, chestplate == null ? new HashMap<String, Object>() : chestplate.serialize());
+        ItemStack helmet = inv.getHelmet();
+        playerInventory.put(103, helmet == null ? new HashMap<String, Object>() : helmet.serialize());
         return playerInventory;
     }
 
