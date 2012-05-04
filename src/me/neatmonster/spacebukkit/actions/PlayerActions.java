@@ -139,19 +139,22 @@ public class PlayerActions {
     public LinkedHashMap<Integer, Map<String, Object>> getInventory(final String playerName) {
         final LinkedHashMap<Integer, Map<String, Object>> playerInventory = new LinkedHashMap<Integer, Map<String, Object>>();
         final Player player = Bukkit.getPlayer(playerName);
-        if (player == null)
-            return new LinkedHashMap<Integer, Map<String, Object>>();
-        for (int i = 0; i < player.getInventory().getSize(); i++)
-            playerInventory.put(i, player.getInventory().getItem(i) == null ? new HashMap<String, Object>() : player
-                    .getInventory().getItem(i).serialize());
-        playerInventory.put(100, player.getInventory().getBoots() == null ? new HashMap<String, Object>() : player
-                .getInventory().getBoots().serialize());
-        playerInventory.put(101, player.getInventory().getLeggings() == null ? new HashMap<String, Object>() : player
-                .getInventory().getLeggings().serialize());
-        playerInventory.put(102, player.getInventory().getChestplate() == null ? new HashMap<String, Object>() : player
-                .getInventory().getChestplate().serialize());
-        playerInventory.put(103, player.getInventory().getHelmet() == null ? new HashMap<String, Object>() : player
-                .getInventory().getHelmet().serialize());
+        if (player == null) {
+            return playerInventory;
+        }
+        PlayerInventory inv = player.getInventory();
+        for (int i = 0; i < inv.getSize(); i++) {
+            ItemStack stack = inv.getItem(i);
+            playerInventory.put(i, stack == null ? new HashMap<String, Object>() : stack.serialize());
+        }
+        ItemStack boots = inv.getBoots();
+        playerInventory.put(100, boots == null ? new HashMap<String, Object>() : boots.serialize());
+        ItemStack leggings = inv.getLeggings();
+        playerInventory.put(101, leggings == null ? new HashMap<String, Object>() : leggings.serialize());
+        ItemStack chestplate = inv.getChestplate();
+        playerInventory.put(102, chestplate == null ? new HashMap<String, Object>() : chestplate.serialize());
+        ItemStack helmet = inv.getHelmet();
+        playerInventory.put(103, helmet == null ? new HashMap<String, Object>() : helmet.serialize());
         return playerInventory;
     }
 
@@ -232,16 +235,17 @@ public class PlayerActions {
             try {
                 final ItemStack stack = new ItemStack(aID, aAmount);
                 final PlayerInventory inventory = player.getInventory();
-                if (stack.getAmount() <= 64)
+                final int maxSize = stack.getMaxStackSize();
+                if (stack.getAmount() <= maxSize)
                     inventory.addItem(stack);
                 final int id = stack.getTypeId();
                 final int amount = stack.getAmount();
                 final short durability = stack.getDurability();
                 final Byte data = stack.getData() != null ? stack.getData().getData() : null;
-                final int quotient = amount / 64;
-                final int remainder = amount % 64;
+                final int quotient = amount / maxSize;
+                final int remainder = amount % maxSize;
                 for (int i = 0; i < quotient; i++)
-                    inventory.addItem(new ItemStack(id, 64, durability, data));
+                    inventory.addItem(new ItemStack(id, maxSize, durability, data));
                 if (remainder > 0)
                     inventory.addItem(new ItemStack(id, remainder, durability, data));
                 return true;
@@ -292,16 +296,17 @@ public class PlayerActions {
             try {
                 final ItemStack stack = new ItemStack(aID, aAmount, aData);
                 final PlayerInventory inventory = player.getInventory();
-                if (stack.getAmount() <= 64)
+                final int maxSize = stack.getMaxStackSize();
+                if (stack.getAmount() <= maxSize)
                     inventory.addItem(stack);
                 final int id = stack.getTypeId();
                 final int amount = stack.getAmount();
                 final short durability = stack.getDurability();
                 final Byte data = stack.getData() != null ? stack.getData().getData() : null;
-                final int quotient = amount / 64;
-                final int remainder = amount % 64;
+                final int quotient = amount / maxSize;
+                final int remainder = amount % maxSize;
                 for (int i = 0; i < quotient; i++)
-                    inventory.addItem(new ItemStack(id, 64, durability, data));
+                    inventory.addItem(new ItemStack(id, maxSize, durability, data));
                 if (remainder > 0)
                     inventory.addItem(new ItemStack(id, remainder, durability, data));
                 return true;
@@ -401,7 +406,10 @@ public class PlayerActions {
             schedulable = false)
     public boolean removeInventoryItem(final String playerName, final int id) {
         try {
-            Bukkit.getPlayer(playerName).getInventory().removeItem(new ItemStack(id));
+            Player player = Bukkit.getPlayer(playerName);
+            if (player != null) {
+                player.getInventory().removeItem(new ItemStack(id));
+            }
             return true;
         } catch (final NullPointerException e) {
             e.printStackTrace();
@@ -607,7 +615,10 @@ public class PlayerActions {
         try {
             final ItemStack stack = Bukkit.getPlayer(playerName).getInventory().getItem(slotNumber);
             stack.setAmount(amount);
-            Bukkit.getPlayer(playerName).getInventory().setItem(slotNumber, stack);
+            Player player = Bukkit.getPlayer(playerName);
+            if (player != null) {
+                player.getInventory().setItem(slotNumber, stack);
+            }
             return true;
         } catch (final NullPointerException e) {
             e.printStackTrace();
