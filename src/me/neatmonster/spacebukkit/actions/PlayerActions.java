@@ -235,16 +235,17 @@ public class PlayerActions {
             try {
                 final ItemStack stack = new ItemStack(aID, aAmount);
                 final PlayerInventory inventory = player.getInventory();
-                if (stack.getAmount() <= 64)
+                final int maxSize = stack.getMaxStackSize();
+                if (stack.getAmount() <= maxSize)
                     inventory.addItem(stack);
                 final int id = stack.getTypeId();
                 final int amount = stack.getAmount();
                 final short durability = stack.getDurability();
                 final Byte data = stack.getData() != null ? stack.getData().getData() : null;
-                final int quotient = amount / 64;
-                final int remainder = amount % 64;
+                final int quotient = amount / maxSize;
+                final int remainder = amount % maxSize;
                 for (int i = 0; i < quotient; i++)
-                    inventory.addItem(new ItemStack(id, 64, durability, data));
+                    inventory.addItem(new ItemStack(id, maxSize, durability, data));
                 if (remainder > 0)
                     inventory.addItem(new ItemStack(id, remainder, durability, data));
                 return true;
@@ -295,16 +296,17 @@ public class PlayerActions {
             try {
                 final ItemStack stack = new ItemStack(aID, aAmount, aData);
                 final PlayerInventory inventory = player.getInventory();
-                if (stack.getAmount() <= 64)
+                final int maxSize = stack.getMaxStackSize();
+                if (stack.getAmount() <= maxSize)
                     inventory.addItem(stack);
                 final int id = stack.getTypeId();
                 final int amount = stack.getAmount();
                 final short durability = stack.getDurability();
                 final Byte data = stack.getData() != null ? stack.getData().getData() : null;
-                final int quotient = amount / 64;
-                final int remainder = amount % 64;
+                final int quotient = amount / maxSize;
+                final int remainder = amount % maxSize;
                 for (int i = 0; i < quotient; i++)
-                    inventory.addItem(new ItemStack(id, 64, durability, data));
+                    inventory.addItem(new ItemStack(id, maxSize, durability, data));
                 if (remainder > 0)
                     inventory.addItem(new ItemStack(id, remainder, durability, data));
                 return true;
@@ -404,7 +406,10 @@ public class PlayerActions {
             schedulable = false)
     public boolean removeInventoryItem(final String playerName, final int id) {
         try {
-            Bukkit.getPlayer(playerName).getInventory().removeItem(new ItemStack(id));
+            Player player = Bukkit.getPlayer(playerName);
+            if (player != null) {
+                player.getInventory().removeItem(new ItemStack(id));
+            }
             return true;
         } catch (final NullPointerException e) {
             e.printStackTrace();
@@ -610,7 +615,10 @@ public class PlayerActions {
         try {
             final ItemStack stack = Bukkit.getPlayer(playerName).getInventory().getItem(slotNumber);
             stack.setAmount(amount);
-            Bukkit.getPlayer(playerName).getInventory().setItem(slotNumber, stack);
+            Player player = Bukkit.getPlayer(playerName);
+            if (player != null) {
+                player.getInventory().setItem(slotNumber, stack);
+            }
             return true;
         } catch (final NullPointerException e) {
             e.printStackTrace();
