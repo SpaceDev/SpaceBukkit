@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -31,24 +32,22 @@ import java.util.TreeMap;
 import me.neatmonster.spacebukkit.SpaceBukkit;
 import me.neatmonster.spacebukkit.players.PlayerLogger;
 import me.neatmonster.spacebukkit.utilities.ANSI;
-import me.neatmonster.spacebukkit.utilities.PermissionsManager;
 import me.neatmonster.spacebukkit.utilities.PropertiesFile;
 import me.neatmonster.spacebukkit.utilities.Utilities;
-import me.neatmonster.spacebukkit.utilities.permissions.PermissionsConnector;
 import me.neatmonster.spacemodule.api.Action;
 import me.neatmonster.spacemodule.api.UnhandledActionException;
+import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.World;
-import org.bukkit.permissions.Permission;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.ServicesManager;
 
 public class ServerActions {
-
-    private PermissionsManager permManager;
 
     @Action(
             aliases = {"banIp", "bannedIpsAdd"})
@@ -350,7 +349,7 @@ public class ServerActions {
             try {
                 if (plugin.getDescription().getPermissions() != null) {
                     final LinkedList<LinkedHashMap<String, String>> permissions = new LinkedList<LinkedHashMap<String, String>>();
-                    for (final Permission permission : plugin.getDescription().getPermissions()) {
+                    for (final org.bukkit.permissions.Permission permission : plugin.getDescription().getPermissions()) {
                         final LinkedHashMap<String, String> permissionInformations = new LinkedHashMap<String, String>();
                         permissionInformations.put("Name", permission.getName());
                         permissionInformations.put("Description", permission.getDescription());
@@ -524,186 +523,225 @@ public class ServerActions {
     @Action(
             aliases = {"permissionsAvailable", "permsAvailable"})
     public boolean permissionsAvailable() {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms != null)
-            return true;
-
-        return false;
+        return Bukkit.getServicesManager().getRegistration(Permission.class) != null;
     }
 
     @Action(
             aliases = {"permissionsPluginName", "permsPluginName"})
     public String getPermissionsPluginName() {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms == null)
+        if (!(permissionsAvailable())) {
             return "NULL";
-
-        return perms.getPermissionsPluginName();
+        }
+        ServicesManager sm = Bukkit.getServicesManager();
+        return sm.getRegistration(Permission.class).getPlugin().getName();
+        
     }
 
     @Action(
             aliases = {"permissionsPluginVersion", "permsPluginVersion"})
     public String getPermissionsPluginVersion() {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms == null)
+        if (!(permissionsAvailable())) {
             return "NULL";
+        }
 
-        return perms.getPermissionsPluginVersion();
+        ServicesManager sm = Bukkit.getServicesManager();
+        return sm.getRegistration(Permission.class).getPlugin().getDescription().getVersion();
     }
 
     @Action(
             aliases = {"permUserNames", "getPermUserNames"})
     public List<String> getPermUserNames() {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms == null)
+        if (!(permissionsAvailable())) {
             return new ArrayList<String>(0);
-        return perms.getUserNames();
+        }
+        ServicesManager sm = Bukkit.getServicesManager();
+        Permission p = sm.getRegistration(Permission.class).getProvider();
+        List<String> result = new ArrayList<String>();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (p.getPlayerGroups(player) != null && p.getPlayerGroups(player)[0] != null) {
+                result.add(player.getName());
+            }
+        }
+        return result;
     }
 
     @Action(
             aliases = {"permUserNamesForWorld", "getPermUserNamesForWorld"})
     public List<String> getPermUserNamesForWorld(String world) {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms == null)
+        if (!(permissionsAvailable())) {
             return new ArrayList<String>(0);
-        return perms.getUserNames(world);
+        }
+        ServicesManager sm = Bukkit.getServicesManager();
+        Permission p = sm.getRegistration(Permission.class).getProvider();
+        List<String> result = new ArrayList<String>();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            String playerName = player.getName();
+            if (p.getPlayerGroups(world, playerName) != null && p.getPlayerGroups(world, playerName).length > 0) {
+                result.add(playerName);
+            }
+        }
+        return result;
     }
 
     @Action(
             aliases = {"permGroupNames", "getPermGroupNames"})
     public List<String> getPermGroupNames() {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms == null)
+        if (!(permissionsAvailable())) {
             return new ArrayList<String>(0);
-        return perms.getGroupNames();
+        }
+        ServicesManager sm = Bukkit.getServicesManager();
+        Permission p = sm.getRegistration(Permission.class).getProvider();
+        return Arrays.asList(p.getGroups());
     }
 
     @Action(
             aliases = {"permGroupNamesForWorld", "getPermGroupNamesForWorld"})
     public List<String> getPermGroupNamesForWorld(String world) {
-            if(permManager == null)
-                permManager = SpaceBukkit.getInstance().getPermissionsManager();
-            PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-            if(perms == null)
+        if (!(permissionsAvailable())) {
             return new ArrayList<String>(0);
-        return perms.getGroupNames(world);
+        }
+        ServicesManager sm = Bukkit.getServicesManager();
+        Permission p = sm.getRegistration(Permission.class).getProvider();
+        return Arrays.asList(p.getGroups());
     }
 
     @Action(
             aliases = {"permGroupUsers", "getPermGroupUsers"})
     public List<String> getPermGroupUsers(String groupName) {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms == null)
+        if (!(permissionsAvailable())) {
             return new ArrayList<String>(0);
-        List<String> names = perms.getGroupUsers(groupName);
-        return (names == null) ? new ArrayList<String>(0) : names;
+        }
+        ServicesManager sm = Bukkit.getServicesManager();
+        Permission p = sm.getRegistration(Permission.class).getProvider();
+        List<String> result = new ArrayList<String>();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (p.playerInGroup(player, groupName)) {
+                result.add(player.getName());
+            }
+        }
+        return result;
     }
 
     @Action(
             aliases = {"permGroupUsersForWorld", "getPermGroupUsersForWorld"})
     public List<String> getPermGroupUsersForWorld(String groupName, String worldName) {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms == null)
+        if (!(permissionsAvailable())) {
             return new ArrayList<String>(0);
-        return perms.getGroupUsers(groupName, worldName);
+        }
+        ServicesManager sm = Bukkit.getServicesManager();
+        Permission p = sm.getRegistration(Permission.class).getProvider();
+        List<String> result = new ArrayList<String>();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            String playerName = player.getName();
+            if (p.playerInGroup(worldName, playerName, groupName)) {
+                result.add(playerName);
+            }
+        }
+        return result;
     }
 
     @Action(
             aliases = {"groupPerms", "getGroupPerms"})
     public List<String> getGroupPerms(String groupName) {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms == null)
+        if (!(permissionsAvailable())) {
             return new ArrayList<String>(0);
-        List<String> groupPerms = perms.getGroupPermissions(groupName);
-        return (groupPerms == null) ? new ArrayList<String>(0) : groupPerms;
+        }
+        ServicesManager sm = Bukkit.getServicesManager();
+        Permission p = sm.getRegistration(Permission.class).getProvider();
+        List<String> result = new ArrayList<String>();
+        for (org.bukkit.permissions.Permission perm : Bukkit.getPluginManager().getPermissions()) {
+            String permName = perm.getName();
+            if (p.groupHas(Bukkit.getWorlds().get(0), groupName, permName)) {
+                result.add(permName);
+            }
+        }
+        return result;
     }
 
     @Action(
             aliases = {"groupPermsForWorld", "getGroupPermsForWorld"})
     public List<String> getGroupPermsForWorld(String groupName, String world) {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms == null)
+        if (!(permissionsAvailable())) {
             return new ArrayList<String>(0);
-        List<String> groupPerms = perms.getGroupPermissions(groupName, world);
-        return (groupPerms == null) ? new ArrayList<String>(0) : groupPerms;
-    }
-
-    @Action(
-            aliases = {"allGroupPerms", "getAllGroupPerms"})
-    public List<String> getAllGroupPerms(String groupName) {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms == null)
-            return new ArrayList<String>(0);
-        List<String> groupPerms = perms.getAllGroupPermissions(groupName);
-        return (groupPerms == null) ? new ArrayList<String>(0) : groupPerms;
+        }
+        ServicesManager sm = Bukkit.getServicesManager();
+        Permission p = sm.getRegistration(Permission.class).getProvider();
+        List<String> result = new ArrayList<String>();
+        for (org.bukkit.permissions.Permission perm : Bukkit.getPluginManager().getPermissions()) {
+            String permName = perm.getName();
+            if (p.groupHas(world, groupName, permName)) {
+                result.add(permName);
+            }
+        }
+        return result;
     }
 
     @Action(
             aliases = {"userPerms", "getUserPerms"})
     public List<String> getUserPerms(String userName) {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms == null)
+        if (!(permissionsAvailable())) {
             return new ArrayList<String>(0);
-        List<String> userPerms = perms.getUserPermissions(userName);
-        return (userPerms == null) ? new ArrayList<String>(0) : userPerms;
+        }
+        ServicesManager sm = Bukkit.getServicesManager();
+        Permission p = sm.getRegistration(Permission.class).getProvider();
+        List<String> result = new ArrayList<String>();
+        Player ply = Bukkit.getPlayer(userName);
+        if (ply == null) {
+            return result;
+        }
+        for (org.bukkit.permissions.Permission perm : Bukkit.getPluginManager().getPermissions()) {
+            String permName = perm.getName();
+            if (p.has(ply, permName)) {
+                result.add(permName);
+            }
+        }
+        return result;
     }
 
     @Action(
             aliases = {"usersWithPerm","usersWithPermission" , "getUsersWithPerm","getUsersWithPermission"})
     public List<String> getUsersWithPermission(String permission) {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms == null)
+        if (!(permissionsAvailable())) {
             return new ArrayList<String>(0);
-        return perms.getUsersWithPermission(permission);
+        }
+        ServicesManager sm = Bukkit.getServicesManager();
+        Permission p = sm.getRegistration(Permission.class).getProvider();
+        List<String> result = new ArrayList<String>();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (p.has(player, permission)) {
+                result.add(player.getName());
+            }
+        }
+        return result;
     }
 
     @Action(
             aliases = {"userHasPerm", "userHasPermission"})
     public boolean userHasPermission(String userName, String permission, String world) {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms == null)
+        if (!(permissionsAvailable())) {
             return false;
-        return perms.userHasPermission(userName, permission, world);
+        }
+        ServicesManager sm = Bukkit.getServicesManager();
+        Permission p = sm.getRegistration(Permission.class).getProvider();
+        return p.has(world, userName, permission);
     }
 
     @Action(
             aliases = {"worldsUserHasPerm", "worldUserHasPermission", "getWorldsUserHasPerm", "getWorldUserHasPermission"})
     public List<String> getWorldsUserHasPermission(String userName, String permission) {
-        if(permManager == null)
-            permManager = SpaceBukkit.getInstance().getPermissionsManager();
-        PermissionsConnector perms = permManager.getCurrentPermissionsConnector();
-        if(perms == null)
+        if (!(permissionsAvailable())) {
             return new ArrayList<String>(0);
-        List<String> worlds = perms.getWorldsUserHasPermission(userName, permission);
-        return (worlds == null) ? new ArrayList<String>(0) : worlds;
+        }
+        ServicesManager sm = Bukkit.getServicesManager();
+        Permission p = sm.getRegistration(Permission.class).getProvider();
+        List<String> result = new ArrayList<String>();
+        for (World world : Bukkit.getWorlds()) {
+            String name = world.getName();
+            if (p.has(name, userName, permission)) {
+                result.add(name);
+            }
+        }
+        return result;
     }
 
 

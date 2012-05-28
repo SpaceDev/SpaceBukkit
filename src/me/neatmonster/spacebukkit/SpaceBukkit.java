@@ -19,21 +19,23 @@ import java.util.Timer;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import com.drdanick.rtoolkit.EventDispatcher;
-import com.drdanick.rtoolkit.event.ToolkitEventHandler;
 import me.neatmonster.spacebukkit.actions.PlayerActions;
 import me.neatmonster.spacebukkit.actions.ServerActions;
 import me.neatmonster.spacebukkit.actions.SystemActions;
 import me.neatmonster.spacebukkit.players.SBListener;
 import me.neatmonster.spacebukkit.plugins.PluginsManager;
 import me.neatmonster.spacebukkit.system.PerformanceMonitor;
-import me.neatmonster.spacebukkit.utilities.PermissionsManager;
 import me.neatmonster.spacemodule.api.ActionsManager;
 import me.neatmonster.spacertk.SpaceRTK;
+import net.milkbowl.vault.Vault;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
+
+import com.drdanick.rtoolkit.EventDispatcher;
+import com.drdanick.rtoolkit.event.ToolkitEventHandler;
 
 @SuppressWarnings("deprecation")
 public class SpaceBukkit extends JavaPlugin {
@@ -58,15 +60,15 @@ public class SpaceBukkit extends JavaPlugin {
     public String               logTag = "[SpaceBukkit] ";
 
     private final Timer         timer  = new Timer();
-    private PermissionsManager  pManager;
 
     private EventDispatcher     edt;
     private ToolkitEventHandler eventHandler;
+    
+    public Vault vault;
 
     @Override
     public void onDisable() {
         performanceMonitor.infanticide();
-        pManager = null;
         timer.cancel();
         try {
             if (panelListener != null)
@@ -120,6 +122,11 @@ public class SpaceBukkit extends JavaPlugin {
             eventHandler = new EventHandler();
             new Thread(eventHandler, "SpaceModule EventHandler").start();
         }
+        
+        Plugin p = this.getServer().getPluginManager().getPlugin("Vault");
+        if (p != null) {
+            vault = (Vault) p;
+        }
 
         new SBListener(this);
         pluginsManager = new PluginsManager();
@@ -143,14 +150,6 @@ public class SpaceBukkit extends JavaPlugin {
 
     public ToolkitEventHandler getEventHandler() {
         return eventHandler;
-    }
-
-    public PermissionsManager getPermissionsManager() {
-        if(pManager == null) {
-            pManager = new PermissionsManager(PermissionsManager.findConnector());
-        }
-
-        return pManager;
     }
 
     private class EventHandler extends ToolkitEventHandler {
