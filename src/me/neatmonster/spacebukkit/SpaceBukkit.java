@@ -14,13 +14,10 @@
  */
 package me.neatmonster.spacebukkit;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.UUID;
-import java.util.logging.Logger;
 
-import com.drdanick.rtoolkit.EventDispatcher;
-import com.drdanick.rtoolkit.event.ToolkitEventHandler;
 import me.neatmonster.spacebukkit.actions.PlayerActions;
 import me.neatmonster.spacebukkit.actions.ServerActions;
 import me.neatmonster.spacebukkit.actions.SystemActions;
@@ -28,15 +25,20 @@ import me.neatmonster.spacebukkit.players.SBListener;
 import me.neatmonster.spacebukkit.plugins.PluginsManager;
 import me.neatmonster.spacebukkit.system.PerformanceMonitor;
 import me.neatmonster.spacebukkit.utilities.PermissionsManager;
+import me.neatmonster.spacemodule.SpaceModule;
 import me.neatmonster.spacemodule.api.ActionsManager;
 import me.neatmonster.spacertk.SpaceRTK;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.config.Configuration;
 
-@SuppressWarnings("deprecation")
+import com.drdanick.rtoolkit.EventDispatcher;
+import com.drdanick.rtoolkit.event.ToolkitEventHandler;
+
 public class SpaceBukkit extends JavaPlugin {
+    
     public static SpaceRTK     spaceRTK = null;
     private static SpaceBukkit spacebukkit;
 
@@ -53,15 +55,15 @@ public class SpaceBukkit extends JavaPlugin {
     public PanelListener        panelListener;
     public PerformanceMonitor   performanceMonitor;
 
-    private Configuration       configuration;
-    public Logger               logger = Logger.getLogger("Minecraft");
-    public String               logTag = "[SpaceBukkit] ";
+    private YamlConfiguration       configuration;
 
     private final Timer         timer  = new Timer();
     private PermissionsManager  pManager;
 
     private EventDispatcher     edt;
     private ToolkitEventHandler eventHandler;
+    
+    private PluginLogger logger;
 
     @Override
     public void onDisable() {
@@ -72,7 +74,7 @@ public class SpaceBukkit extends JavaPlugin {
             if (panelListener != null)
                 panelListener.stopServer();
         } catch (final Exception e) {
-            logger.severe(logTag + e.getMessage());
+            logger.severe(e.getMessage());
         }
         edt.setRunning(false);
         synchronized (edt) {
@@ -87,17 +89,21 @@ public class SpaceBukkit extends JavaPlugin {
     @Override
     public void onEnable() {
         spacebukkit = this;
-        configuration = new Configuration(new File("SpaceModule", "configuration.yml"));
-        configuration.load();
+        logger = this.getLogger();
+        configuration = YamlConfiguration.loadConfiguration(SpaceModule.CONFIGURATION);
         salt = configuration.getString("General.Salt", "<default>");
         if (salt.equals("<default>")) {
             salt = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
-            configuration.setProperty("General.Salt", salt);
+            configuration.set("General.Salt", salt);
         }
-        configuration.setProperty("General.WorldContainer", Bukkit.getWorldContainer().getPath());
+        configuration.set("General.WorldContainer", Bukkit.getWorldContainer().getPath());
         port = configuration.getInt("SpaceBukkit.Port", 2011);
         rPort = configuration.getInt("SpaceRTK.Port", 2012);
-        configuration.save();
+        try {
+            configuration.save(SpaceModule.CONFIGURATION);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         if(edt == null)
             edt = new EventDispatcher();
@@ -132,7 +138,7 @@ public class SpaceBukkit extends JavaPlugin {
         timer.scheduleAtFixedRate(performanceMonitor, 0L, 1000L);
         logger.info("----------------------------------------------------------");
         logger.info("|        SpaceBukkit version "
-                + Bukkit.getPluginManager().getPlugin("SpaceBukkit").getDescription().getVersion()
+                + this.getDescription().getVersion()
                 + " is now enabled!         |");
         logger.info("----------------------------------------------------------");
     }
@@ -143,6 +149,10 @@ public class SpaceBukkit extends JavaPlugin {
 
     public ToolkitEventHandler getEventHandler() {
         return eventHandler;
+    }
+    
+    public PluginLogger getLogger() {
+        return logger;
     }
 
     public PermissionsManager getPermissionsManager() {

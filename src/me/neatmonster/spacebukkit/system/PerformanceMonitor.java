@@ -16,6 +16,7 @@ package me.neatmonster.spacebukkit.system;
 
 import java.util.TimerTask;
 
+
 import me.neatmonster.spacebukkit.SpaceBukkit;
 
 import org.bukkit.Bukkit;
@@ -35,8 +36,7 @@ public class PerformanceMonitor extends TimerTask {
     public PerformanceMonitor() {
         monitor = new JavaSysMon();
         if (!monitor.supportedPlatform()) {
-            final SpaceBukkit spaceBukkit = SpaceBukkit.getInstance();
-            spaceBukkit.logger.severe(spaceBukkit.logTag + "Performance monitoring unsupported!");
+            SpaceBukkit.getInstance().getLogger().severe("Performance monitoring unsupported!");
             monitor = null;
         } else
             now = monitor.cpuTimes();
