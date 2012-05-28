@@ -5,3 +5,4 @@ author: The SpaceCP Team
 website: http://spacebukkit.xereo.net/
 main: me.neatmonster.spacebukkit.SpaceBukkit
 database: false
+softdepends: Vault
