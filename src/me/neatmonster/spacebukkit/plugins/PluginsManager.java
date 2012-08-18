@@ -41,6 +41,9 @@ public class PluginsManager {
      * @return Jar File the plugin's code is contained in
      */
     public static File getJAR(final Plugin plugin) {
+        if (!plugin.getPluginLoader().getClass().equals(JavaPluginLoader.class)){
+    		return null;
+    	}
         Class<?> currentClass = plugin.getClass();
         while (!(currentClass.equals(JavaPlugin.class))) {
             currentClass = currentClass.getSuperclass();
