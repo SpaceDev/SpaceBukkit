@@ -426,7 +426,11 @@ public class ServerActions implements ActionHandler {
             pluginInformations.put("IsEnabled", plugin.isEnabled());
             pluginInformations.put("Commands", plugin.getDescription().getCommands());
             pluginInformations.put("Depend", plugin.getDescription().getDepend());
-            pluginInformations.put("DataFolder", plugin.getDataFolder().getPath());
+            try {
+                pluginInformations.put("DataFolder", plugin.getDataFolder().getPath());                
+            } catch (NullPointerException e) {
+                pluginInformations.put("DataFolder", "NONE");
+            }
             pluginInformations.put("SoftDepend", plugin.getDescription().getSoftDepend());
             pluginInformations.put("Authors", plugin.getDescription().getAuthors());
             pluginInformations.put("Description", plugin.getDescription().getDescription());
