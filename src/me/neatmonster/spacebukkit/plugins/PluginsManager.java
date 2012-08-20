@@ -25,7 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-
+import org.bukkit.plugin.java.JavaPluginLoader;
 /**
  * Manages Plugins and interacts with BukGet
  */
@@ -41,7 +41,7 @@ public class PluginsManager {
      * @return Jar File the plugin's code is contained in
      */
     public static File getJAR(final Plugin plugin) {
-        if (!plugin.getPluginLoader().getClass().equals(JavaPluginLoader.class)){
+        if (!plugin.getPluginLoader() instanceof JavaPluginLoader){
     		return null;
     	}
         Class<?> currentClass = plugin.getClass();
