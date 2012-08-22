@@ -41,7 +41,7 @@ public class PluginsManager {
      * @return Jar File the plugin's code is contained in
      */
     public static File getJAR(final Plugin plugin) {
-        if (!plugin.getPluginLoader() instanceof JavaPluginLoader){
+        if (!(plugin.getPluginLoader() instanceof JavaPluginLoader)){
     		return null;
     	}
         Class<?> currentClass = plugin.getClass();
