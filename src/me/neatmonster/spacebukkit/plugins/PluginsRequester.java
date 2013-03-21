@@ -31,27 +31,33 @@ import org.json.simple.JSONObject;
  */
 public class PluginsRequester implements Runnable {
 
+    private static final String PLUGINS_URL = "http://api.bukget.org/3/plugins/";
+
     @Override
     @SuppressWarnings("unchecked")
     public void run() {
-		//TODO: Remove class
-        /*try {
-            final URLConnection connection = new URL("http://api.bukget.org/api2/bukkit/").openConnection();
+        try {
+            final URLConnection connection = new URL(PLUGINS_URL).openConnection();
             final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             final StringBuffer stringBuffer = new StringBuffer();
+
             String line;
-            while ((line = bufferedReader.readLine()) != null)
+            while ((line = bufferedReader.readLine()) != null) {
                 stringBuffer.append(line);
+            }
             bufferedReader.close();
-			List<JSONObject> apiResponse = (JSONArray) JSONValue.parse(stringBuffer.toString());
-			
-            //PluginsManager.pluginsNames = (JSONArray) JSONValue.parse(stringBuffer.toString());
-            SpaceBukkit.getInstance().getLogger().info("Database contains "
-                    + PluginsManager.pluginsNames.size() + " plugins.");
+
+            List<JSONObject> apiResponse = (JSONArray) JSONValue.parse(stringBuffer.toString());
+
+            // TODO Plugins with no name
+            for (JSONObject obj : apiResponse) {
+                String name = (String) obj.get("plugin_name");
+                if (!name.isEmpty()) PluginsManager.pluginsNames.add(name);
+            }
+
+            SpaceBukkit.getInstance().getLogger().info("Database contains " + PluginsManager.pluginsNames.size() + " plugins.");
         } catch (final Exception e) {
             e.printStackTrace();
         }
-        PluginsManager.pluginsNames = new ArrayList<String>();
-        */
     }
 }
