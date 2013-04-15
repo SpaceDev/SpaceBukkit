@@ -22,7 +22,7 @@ import java.util.UUID;
 import java.io.File;
 
 import com.drdanick.rtoolkit.system.EventDispatchWorker;
-import mcstats.Metrics;
+import org.mcstats.MetricsLite;
 import me.neatmonster.spacebukkit.actions.PlayerActions;
 import me.neatmonster.spacebukkit.actions.ServerActions;
 import me.neatmonster.spacebukkit.actions.SystemActions;
@@ -179,7 +179,7 @@ public class SpaceBukkit extends JavaPlugin {
      */
     private void setupMetrics() {
         try {
-            Metrics metrics = new Metrics(this);
+            MetricsLite metrics = new MetricsLite(this);
             
             metrics.start();
         } catch (IOException e) {
