@@ -1,28 +1,29 @@
 /*
  * This file is part of SpaceBukkit (http://spacebukkit.xereo.net/).
- *
- * SpaceBukkit is free software: you can redistribute it and/or modify it under the terms of the
- * Attribution-NonCommercial-ShareAlike Unported (CC BY-NC-SA) license as published by the Creative Common organization,
- * either version 3.0 of the license, or (at your option) any later version.
- *
- * SpaceBukkit is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Attribution-NonCommercial-ShareAlike
+ * 
+ * SpaceBukkit is free software: you can redistribute it and/or modify it under
+ * the terms of the Attribution-NonCommercial-ShareAlike Unported (CC BY-NC-SA)
+ * license as published by the Creative Common organization, either version 3.0
+ * of the license, or (at your option) any later version.
+ * 
+ * SpaceBukkit is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the Attribution-NonCommercial-ShareAlike
  * Unported (CC BY-NC-SA) license for more details.
- *
- * You should have received a copy of the Attribution-NonCommercial-ShareAlike Unported (CC BY-NC-SA) license along with
- * this program. If not, see <http://creativecommons.org/licenses/by-nc-sa/3.0/>.
+ * 
+ * You should have received a copy of the Attribution-NonCommercial-ShareAlike
+ * Unported (CC BY-NC-SA) license along with this program. If not, see
+ * <http://creativecommons.org/licenses/by-nc-sa/3.0/>.
  */
 package me.neatmonster.spacebukkit;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.UUID;
-import java.io.File;
 
-import com.drdanick.rtoolkit.system.EventDispatchWorker;
-import mcstats.Metrics;
 import me.neatmonster.spacebukkit.actions.PlayerActions;
 import me.neatmonster.spacebukkit.actions.ServerActions;
 import me.neatmonster.spacebukkit.actions.SystemActions;
@@ -36,40 +37,43 @@ import me.neatmonster.spacertk.SpaceRTK;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.MetricsLite;
 
-import com.drdanick.rtoolkit.system.EventDispatcher;
 import com.drdanick.rtoolkit.event.ToolkitEventHandler;
+import com.drdanick.rtoolkit.system.EventDispatchWorker;
+import com.drdanick.rtoolkit.system.EventDispatcher;
+
 /**
  * Main class of the Plugin
  */
 public class SpaceBukkit extends JavaPlugin {
-    public static SpaceRTK     spaceRTK = null;
+    public static SpaceRTK spaceRTK = null;
     private static SpaceBukkit spacebukkit;
 
     public static SpaceBukkit getInstance() {
         return spacebukkit;
     }
 
-    public int                  port;
-    public int                  rPort;
-    public int                  pingPort;
-    public String               salt;
-    public InetAddress          bindAddress;
-    
-    public int                  maxJoins;
-    public int                  maxMessages;
-    public int                  maxQuits;
+    public int port;
+    public int rPort;
+    public int pingPort;
+    public String salt;
+    public InetAddress bindAddress;
 
-    public PluginsManager       pluginsManager;
-    public ActionsManager       actionsManager;
-    public PanelListener        panelListener;
-    public PerformanceMonitor   performanceMonitor;
+    public int maxJoins;
+    public int maxMessages;
+    public int maxQuits;
 
-    private YamlConfiguration   config;
+    public PluginsManager pluginsManager;
+    public ActionsManager actionsManager;
+    public PanelListener panelListener;
+    public PerformanceMonitor performanceMonitor;
 
-    private final Timer         timer  = new Timer("SpaceBukkit Timer Thread", false);
+    private YamlConfiguration config;
 
-    private EventDispatcher     edt;
+    private final Timer timer = new Timer("SpaceBukkit Timer Thread", false);
+
+    private EventDispatcher edt;
     private ToolkitEventHandler eventHandler;
     private EventDispatchWorker toolkitEventWorker;
 
@@ -78,8 +82,7 @@ public class SpaceBukkit extends JavaPlugin {
         performanceMonitor.infanticide();
         timer.cancel();
         try {
-            if (panelListener != null)
-                panelListener.stopServer();
+            if (panelListener != null) panelListener.stopServer();
         } catch (final Exception e) {
             getLogger().severe(e.getMessage());
         }
@@ -93,7 +96,7 @@ public class SpaceBukkit extends JavaPlugin {
     @Override
     public void onEnable() {
         spacebukkit = this;
-        
+
         config = YamlConfiguration.loadConfiguration(new File("SpaceModule", "configuration.yml"));
         config.addDefault("General.salt", "<default>");
         config.addDefault("General.worldContainer", Bukkit.getWorldContainer().getPath());
@@ -113,16 +116,15 @@ public class SpaceBukkit extends JavaPlugin {
         port = config.getInt("SpaceBukkit.port", 2011);
         rPort = config.getInt("SpaceRTK.port", 2012);
 
-
         String bindAddressString = config.getString("General.bindIp", "0.0.0.0");
-        if(bindAddressString.trim().isEmpty())
-            bindAddressString = "0.0.0.0";
+        if (bindAddressString.trim().isEmpty()) bindAddressString = "0.0.0.0";
         try {
             bindAddress = InetAddress.getByName(bindAddressString);
-        } catch(UnknownHostException e) {
+        } catch (UnknownHostException e) {
             try {
                 bindAddress = InetAddress.getLocalHost();
-            } catch(UnknownHostException e2) {}
+            } catch (UnknownHostException e2) {
+            }
             System.err.println("Warning: Could not assign bind address " + bindAddressString + ":");
             System.err.println(e.getMessage());
             System.err.println("Will bind to loopback address: " + bindAddress.getHostAddress() + "...");
@@ -138,17 +140,16 @@ public class SpaceBukkit extends JavaPlugin {
             e.printStackTrace();
         }
 
-        if(edt == null)
-            edt = new EventDispatcher();
+        if (edt == null) edt = new EventDispatcher();
 
-        if(toolkitEventWorker == null) {
+        if (toolkitEventWorker == null) {
             toolkitEventWorker = new EventDispatchWorker();
             toolkitEventWorker.setEnabled(true);
             edt.registerEventHandler(eventHandler, toolkitEventWorker);
         }
 
-        if(!edt.isRunning()) {
-            synchronized(edt) {
+        if (!edt.isRunning()) {
+            synchronized (edt) {
                 edt.notifyAll();
             }
             edt.setRunning(true);
@@ -157,10 +158,10 @@ public class SpaceBukkit extends JavaPlugin {
             edtThread.start();
         }
 
-        if(!toolkitEventWorker.isRunning()) {
+        if (!toolkitEventWorker.isRunning()) {
             toolkitEventWorker.setEnabled(true);
         }
-        
+
         setupMetrics();
 
         new SBListener(this);
@@ -173,14 +174,14 @@ public class SpaceBukkit extends JavaPlugin {
         performanceMonitor = new PerformanceMonitor();
         timer.scheduleAtFixedRate(performanceMonitor, 0L, 1000L);
     }
-    
+
     /**
      * Sets up Metrics
      */
     private void setupMetrics() {
         try {
-            Metrics metrics = new Metrics(this);
-            
+            MetricsLite metrics = new MetricsLite(this);
+
             metrics.start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -189,6 +190,7 @@ public class SpaceBukkit extends JavaPlugin {
 
     /**
      * Gets the RTK event dispatcher
+     * 
      * @return event dispatcher
      */
     public EventDispatcher getEdt() {
@@ -197,6 +199,7 @@ public class SpaceBukkit extends JavaPlugin {
 
     /**
      * Gets the RTK event handler
+     * 
      * @return event handler
      */
     public ToolkitEventHandler getEventHandler() {
