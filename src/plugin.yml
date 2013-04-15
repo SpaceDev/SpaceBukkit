@@ -1,7 +1,8 @@
-name: SpaceBukkit
-version: 1.2
-description: A powerful yet simple web panel for administering your Minecraft servers with ease.
+name: ${project.name}
+version: ${project.version}
+description: ${project.description}
 author: The SpaceCP Team
-website: http://spacebukkit.xereo.net/
+website: ${project.url}
+
 main: me.neatmonster.spacebukkit.SpaceBukkit
 database: false
