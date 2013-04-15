@@ -3,5 +3,5 @@ version: 1.2
 description: A powerful yet simple web panel for administering your Minecraft servers with ease.
 author: The SpaceCP Team
 website: http://spacebukkit.xereo.net/
-main: me.neatmonster.spacebukkit.SpaceBukkit
+main: net.xereo.spacebukkit.SpaceBukkit
 database: false

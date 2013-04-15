@@ -12,7 +12,7 @@
  * You should have received a copy of the Attribution-NonCommercial-ShareAlike Unported (CC BY-NC-SA) license along with
  * this program. If not, see <http://creativecommons.org/licenses/by-nc-sa/3.0/>.
  */
-package me.neatmonster.spacebukkit.utilities;
+package net.xereo.spacebukkit.utilities;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,7 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import me.neatmonster.spacebukkit.SpaceBukkit;
+import net.xereo.spacebukkit.SpaceBukkit;
+
 
 /**
  * Used for accessing and creating .[properties] files, reads them as utf-8, saves as utf-8.

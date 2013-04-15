@@ -12,15 +12,16 @@
  * You should have received a copy of the Attribution-NonCommercial-ShareAlike Unported (CC BY-NC-SA) license along with
  * this program. If not, see <http://creativecommons.org/licenses/by-nc-sa/3.0/>.
  */
-package me.neatmonster.spacebukkit.players;
+package net.xereo.spacebukkit.players;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
-import me.neatmonster.spacebukkit.SpaceBukkit;
-import me.neatmonster.spacebukkit.utilities.PropertiesFile;
+import net.xereo.spacebukkit.SpaceBukkit;
+import net.xereo.spacebukkit.utilities.PropertiesFile;
+
 
 /**
  * Stores information about Player's actions

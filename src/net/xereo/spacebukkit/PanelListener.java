@@ -12,7 +12,7 @@
  * You should have received a copy of the Attribution-NonCommercial-ShareAlike Unported (CC BY-NC-SA) license along with
  * this program. If not, see <http://creativecommons.org/licenses/by-nc-sa/3.0/>.
  */
-package me.neatmonster.spacebukkit;
+package net.xereo.spacebukkit;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,10 +21,10 @@ import java.io.PrintWriter;
 import java.net.*;
 import java.util.List;
 
-import me.neatmonster.spacebukkit.events.RequestEvent;
-import me.neatmonster.spacebukkit.utilities.Utilities;
 import me.neatmonster.spacemodule.api.InvalidArgumentsException;
 import me.neatmonster.spacemodule.api.UnhandledActionException;
+import net.xereo.spacebukkit.events.RequestEvent;
+import net.xereo.spacebukkit.utilities.Utilities;
 
 import org.bukkit.Bukkit;
 import org.json.simple.JSONValue;

@@ -12,9 +12,9 @@
  * You should have received a copy of the Attribution-NonCommercial-ShareAlike Unported (CC BY-NC-SA)
  * license along with this program. If not, see <http://creativecommons.org/licenses/by-nc-sa/3.0/>.
  */
-package me.neatmonster.spacebukkit.players;
+package net.xereo.spacebukkit.players;
 
-import me.neatmonster.spacebukkit.SpaceBukkit;
+import net.xereo.spacebukkit.SpaceBukkit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;

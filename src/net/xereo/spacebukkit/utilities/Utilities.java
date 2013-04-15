@@ -12,7 +12,7 @@
  * You should have received a copy of the Attribution-NonCommercial-ShareAlike Unported (CC BY-NC-SA)
  * license along with this program. If not, see <http://creativecommons.org/licenses/by-nc-sa/3.0/>.
  */
-package me.neatmonster.spacebukkit.utilities;
+package net.xereo.spacebukkit.utilities;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.neatmonster.spacebukkit.SpaceBukkit;
+import net.xereo.spacebukkit.SpaceBukkit;
 
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;

@@ -12,7 +12,7 @@
  * You should have received a copy of the Attribution-NonCommercial-ShareAlike Unported (CC BY-NC-SA)
  * license along with this program. If not, see <http://creativecommons.org/licenses/by-nc-sa/3.0/>.
  */
-package me.neatmonster.spacebukkit.actions;
+package net.xereo.spacebukkit.actions;
 
 import java.io.File;
 import java.lang.management.GarbageCollectorMXBean;
@@ -21,7 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import me.neatmonster.spacebukkit.SpaceBukkit;
+import net.xereo.spacebukkit.SpaceBukkit;
+
 import me.neatmonster.spacemodule.api.Action;
 import me.neatmonster.spacemodule.api.ActionHandler;
 

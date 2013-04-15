@@ -12,11 +12,11 @@
  * You should have received a copy of the Attribution-NonCommercial-ShareAlike Unported (CC BY-NC-SA)
  * license along with this program. If not, see <http://creativecommons.org/licenses/by-nc-sa/3.0/>.
  */
-package me.neatmonster.spacebukkit.system;
+package net.xereo.spacebukkit.system;
 
 import java.util.TimerTask;
 
-import me.neatmonster.spacebukkit.SpaceBukkit;
+import net.xereo.spacebukkit.SpaceBukkit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;

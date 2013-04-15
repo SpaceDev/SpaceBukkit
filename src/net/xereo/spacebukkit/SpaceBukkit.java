@@ -12,7 +12,7 @@
  * You should have received a copy of the Attribution-NonCommercial-ShareAlike Unported (CC BY-NC-SA) license along with
  * this program. If not, see <http://creativecommons.org/licenses/by-nc-sa/3.0/>.
  */
-package me.neatmonster.spacebukkit;
+package net.xereo.spacebukkit;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -23,15 +23,15 @@ import java.io.File;
 
 import com.drdanick.rtoolkit.system.EventDispatchWorker;
 import mcstats.Metrics;
-import me.neatmonster.spacebukkit.actions.PlayerActions;
-import me.neatmonster.spacebukkit.actions.ServerActions;
-import me.neatmonster.spacebukkit.actions.SystemActions;
-import me.neatmonster.spacebukkit.players.SBListener;
-import me.neatmonster.spacebukkit.plugins.PluginsManager;
-import me.neatmonster.spacebukkit.system.PerformanceMonitor;
 import me.neatmonster.spacemodule.SpaceModule;
 import me.neatmonster.spacemodule.api.ActionsManager;
 import me.neatmonster.spacertk.SpaceRTK;
+import net.xereo.spacebukkit.actions.PlayerActions;
+import net.xereo.spacebukkit.actions.ServerActions;
+import net.xereo.spacebukkit.actions.SystemActions;
+import net.xereo.spacebukkit.players.SBListener;
+import net.xereo.spacebukkit.plugins.PluginsManager;
+import net.xereo.spacebukkit.system.PerformanceMonitor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
