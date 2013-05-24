@@ -179,7 +179,12 @@ public class PanelListener extends Thread {
                     if (string.contains("&key=" + Utilities.crypt(method + SpaceBukkit.getInstance().salt))) {
                         final Object result = interpret(string);
                         if (result != null)
-                            output.println(Utilities.addHeader(JSONValue.toJSONString(result)));
+                            try {
+                                output.println(Utilities.addHeader(JSONValue.toJSONString(result)));
+                            } catch (OutOfMemoryError e) {
+                                System.gc();
+                                output.println(Utilities.addHeader(null));
+                            }
                         else
                             output.println(Utilities.addHeader(null));
                     } else
@@ -190,7 +195,12 @@ public class PanelListener extends Thread {
                     if (string.contains("&key=" + Utilities.crypt(method + SpaceBukkit.getInstance().salt))) {
                         final Object result = interpretm(string);
                         if (result != null)
-                            output.println(Utilities.addHeader(JSONValue.toJSONString(result)));
+                            try {
+                                output.println(Utilities.addHeader(JSONValue.toJSONString(result)));
+                            } catch (OutOfMemoryError e) {
+                                System.gc();
+                                output.println(Utilities.addHeader(null));
+                            }
                         else
                             output.println(Utilities.addHeader(null));
                     } else
